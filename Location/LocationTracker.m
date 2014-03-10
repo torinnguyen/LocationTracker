@@ -87,7 +87,7 @@
     
     [self cleanUpAllTimers];
     
-    CLLocationManager *locationManager = [LocationTracker sharedLocationManager];
+    CLLocationManager *locationManager = [[self class] sharedLocationManager];
     [locationManager stopUpdatingLocation];
     [locationManager startMonitoringSignificantLocationChanges];
 }
@@ -98,7 +98,7 @@
 
     [self cleanUpAllTimers];
 
-    CLLocationManager *locationManager = [LocationTracker sharedLocationManager];
+    CLLocationManager *locationManager = [[self class] sharedLocationManager];
     [locationManager stopMonitoringSignificantLocationChanges];
 
     [self restartLocationUpdates];
@@ -205,7 +205,7 @@
     }
     
     [self logStringToFile:@"authorizationStatus authorized"];
-    CLLocationManager *locationManager = [LocationTracker sharedLocationManager];
+    CLLocationManager *locationManager = [[self class] sharedLocationManager];
     locationManager.delegate = self;
     locationManager.desiredAccuracy = LOCATION_TRACKER_ACCURACY_CLASS;      //not applicable for significant change service
     locationManager.distanceFilter = LOCATION_TRACKER_DISTANCE_FILTER;      //not applicable for significant change service
@@ -219,7 +219,7 @@
     
     [self cleanUpAllTimers];
     
-	CLLocationManager *locationManager = [LocationTracker sharedLocationManager];
+	CLLocationManager *locationManager = [[self class] sharedLocationManager];
 	[locationManager stopUpdatingLocation];
 }
 
@@ -250,7 +250,7 @@
         return;
     }
     
-    CLLocationManager * locationManager = [LocationTracker sharedLocationManager];
+    CLLocationManager * locationManager = [[self class] sharedLocationManager];
     locationManager.delegate = self;
     locationManager.desiredAccuracy = LOCATION_TRACKER_ACCURACY_CLASS;      //not applicable for significant change service
     locationManager.distanceFilter = LOCATION_TRACKER_DISTANCE_FILTER;      //not applicable for significant change service
@@ -347,7 +347,7 @@
     if ([self isApplicationInBackgroundMode])
         return;
     
-    CLLocationManager *locationManager = [LocationTracker sharedLocationManager];
+    CLLocationManager *locationManager = [[self class] sharedLocationManager];
     [locationManager stopUpdatingLocation];
     
     [self logStringToFile:@"locationManager stop Updating after 10 seconds"];

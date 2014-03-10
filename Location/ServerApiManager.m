@@ -34,7 +34,6 @@
 - (void)updateLocationToServerInBackground:(CLLocation *)location
 {
     UIApplication* application = [UIApplication sharedApplication];
-    
     if ([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)] == NO)
         return;
     
