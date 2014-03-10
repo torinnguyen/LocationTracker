@@ -21,3 +21,5 @@ http://mobileoop.com/background-location-update-programming-for-ios-7
 http://stackoverflow.com/questions/3421242/behaviour-for-significant-change-location-api-when-terminated-suspended
 
 http://stackoverflow.com/questions/18901583/start-location-manager-in-ios-7-from-background-task
+
+[![screenshot](https://github.com/torinnguyen/LocationTracker/raw/master/screenshot.png)](#features)
