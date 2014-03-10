@@ -43,7 +43,6 @@
         [self didReceiveNewLocationCallback:object];
     }];
     [[LocationTracker sharedInstance] startLocationTracking];
-    [LocationTracker sharedInstance].minimumCallBackInterval = 60;
 }
 
 - (void)viewWillDisappear:(BOOL)animated

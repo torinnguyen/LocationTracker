@@ -17,7 +17,8 @@
 @property (nonatomic, strong) CLLocation * myLastLocation;
 @property (nonatomic, strong) NSDate * myLastLocationTime;
 
-@property (nonatomic, assign) NSTimeInterval minimumCallBackInterval;
+@property (nonatomic, assign) NSTimeInterval minimumCallBackIntervalForeground;
+@property (nonatomic, assign) NSTimeInterval minimumCallBackIntervalBackground;
 
 + (instancetype)sharedInstance;
 

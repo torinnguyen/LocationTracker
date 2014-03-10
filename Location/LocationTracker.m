@@ -9,8 +9,9 @@
 #import "LocationTracker.h"
 #import <objc/runtime.h>
 
-#define LOCATION_TRACKER_DEFAULT_CALLBACK_INTERVAL      60                      //seconds
-#define LOCATION_TRACKER_DEFAULT_INTERVAL               60                      //seconds, foreground mode only
+#define LOCATION_TRACKER_FOREGROUND_CALLBACK_INTERVAL   30                      //seconds, background mode, usually slower
+#define LOCATION_TRACKER_BACKGROUND_CALLBACK_INTERVAL   120                     //seconds, foreground mode, usually faster
+#define LOCATION_TRACKER_DEFAULT_INTERVAL               30                      //seconds, foreground mode only
 #define LOCATION_TRACKER_ACTIVE_DURATION                8                       //seconds, foreground mode only
 #define LOCATION_TRACKER_MAX_LOCATION_AGE               30                      //seconds
 #define LOCATION_TRACKER_MAX_LOCATION_HISTORY           100
@@ -47,7 +48,8 @@
 
     //Initialize internal variables
     self.updateInterval = LOCATION_TRACKER_DEFAULT_INTERVAL;
-    self.minimumCallBackInterval = LOCATION_TRACKER_DEFAULT_CALLBACK_INTERVAL;
+    self.minimumCallBackIntervalForeground = LOCATION_TRACKER_FOREGROUND_CALLBACK_INTERVAL;
+    self.minimumCallBackIntervalBackground = LOCATION_TRACKER_BACKGROUND_CALLBACK_INTERVAL;
     self.myLocationArray = [NSMutableArray array];
     self.maxLocationHistory = LOCATION_TRACKER_MAX_LOCATION_HISTORY;
     
@@ -87,6 +89,9 @@
     
     [self cleanUpAllTimers];
     
+    self.lastCallbackTime = nil;
+    self.myLastLocationTime = nil;
+    
     CLLocationManager *locationManager = [[self class] sharedLocationManager];
     [locationManager stopUpdatingLocation];
     [locationManager startMonitoringSignificantLocationChanges];
@@ -98,6 +103,9 @@
 
     [self cleanUpAllTimers];
 
+    self.lastCallbackTime = nil;
+    self.myLastLocationTime = nil;
+    
     CLLocationManager *locationManager = [[self class] sharedLocationManager];
     [locationManager stopMonitoringSignificantLocationChanges];
 
@@ -301,7 +309,8 @@
     
     //Callback to whoever is listening (most likely a VC to update UI)
     NSTimeInterval deltaCallback = fabsf([self.lastCallbackTime timeIntervalSinceNow]);
-    if (self.lastCallbackTime == nil || deltaCallback > self.minimumCallBackInterval) {
+    NSTimeInterval minDeltaCallback = [self isApplicationInBackgroundMode] ? self.minimumCallBackIntervalBackground : self.minimumCallBackIntervalForeground;
+    if (self.lastCallbackTime == nil || deltaCallback > minDeltaCallback) {
         self.lastCallbackTime = [NSDate date];
         [self performCallbackBlockWithObject:newLocation];
     }
@@ -351,6 +360,9 @@
     [locationManager stopUpdatingLocation];
     
     [self logStringToFile:@"locationManager stop Updating after 10 seconds"];
+    
+    //Callback another time for this cycle since this should be the most accurate location
+    [self performCallbackBlockWithObject:self.myLastLocation];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
